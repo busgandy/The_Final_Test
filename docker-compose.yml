@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./vipcustomer.web-master
+    ports:
+      - 3000:3000
+    volumes:
+      - ./vipcustomer.web-master:/vipcustomer.web-master
+      
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.local
+    command: ./scripts/docker-entrypoint.sh
+    volumes:
+    - ./app:/usr/src/app
+    ports:
+    - 8000:8000
+    depends_on:
+    - db
+
+  db:
+    image: postgres:13.4
+    ports:
+    - 5432:5432
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    - POSTGRES_DB=db
